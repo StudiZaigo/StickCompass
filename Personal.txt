@@ -1,2 +1,1 @@
-#define ESSID "aterm-83a9d4-a"
-#define PASSWORD "2e554b42b404e"
+
