@@ -3,7 +3,8 @@
 //#define DEBUG_MENU
 //#define DEBUG_MEASURMENT
 //#define DEBUG_EEPROM
-// #define FEATURE_WiFi
+
+#define FEATURE_WiFi
 
 //#include "M5StickCPlus/src/M5StickCPlus.h"
 #include <M5StickCPlus.h>
