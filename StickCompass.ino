@@ -8,8 +8,8 @@
 
 //#include "M5StickCPlus/src/M5StickCPlus.h"
 #include <M5StickCPlus.h>
-#include <EEPROM.h>
-#include <Ticker.h>
+#include <EEPROM.h> // EEPROMライブラリをインクルードする
+#include <Ticker.h>   
 #include <LSM303.h>
 
 #ifdef FEATURE_WiFi
@@ -33,7 +33,7 @@
 char IP_ADDRESS[] = "192.168.100.175";
 #define IP_GATEWAY "192.168.10.1"
 #define SUBNET_MASK "255.255.255.0"
-#define ESSID "SSID"
+#define SSID "SSID"
 #define PASSWORD "PASSWORD"
 
 #define LED_PIN 10
@@ -50,10 +50,10 @@ int Menu_Rows_count = 5;  // メニューの最大表示行数
 enum mMenu_Level { mMainMenu, mSubMenu };    //　メユーはMainとSubから構成される
 uint16_t Menu_Level = mMainMenu;  //  現在のメユーレベル
 
-enum mMainMenu { mMeasure, mCalibration, mSetup };
-char *MainMenu_Items[] = { "Measure", "Calibration", "Setup" };
+enum mMainMenu { mMeasure, mCalibration, mSetup, mPowerOff };
+char *MainMenu_Items[] = { "Measure", "Calibration", "Setup", "Power off" };
 uint16_t MainMenu_No = mMeasure;
-int MainMenu_Rows_Count = 3;
+int MainMenu_Rows_Count = 4;
 int MainMenu_Rows_Index = 0;
 
 enum mSubMenu { mServer, mDeclination, mComPort, mLED, mBeep, mExit };
@@ -187,13 +187,16 @@ void ExecMainMenu() {
 #endif
   switch (MainMenu_No) {
     case mMeasure:
-      Measurment();
+      ExecMeasurment();
       break;
     case mCalibration:
-      Calibration();
+      ExecCalibration();
       break;
     case mSetup:
       Menu_Level = mSubMenu;
+      break;
+    case mPowerOff:
+      ExecPowerOff();
       break;
   }
 #ifdef DEBUG_MENU
@@ -311,7 +314,7 @@ void DisplaySubMenu() {
 }
 
 //------------------------------------------------------------------------------
-bool Measurment() {
+bool ExecMeasurment() {
   bool e = false;
   char buf[10];
   int n = 0,m;
@@ -408,7 +411,7 @@ bool Measurment() {
 }
 
 //------------------------------------------------------------------------------
-void Calibration() {
+void ExecCalibration() {
   M5.Lcd.fillScreen(BLACK);
   M5.Lcd.setRotation(3);
   M5.Lcd.setTextColor(WHITE, BLACK);
@@ -459,6 +462,10 @@ void Calibration() {
 
   snprintf(report, sizeof(report), "処理後 min:{%+4d,%+4d,%+4d}  max:{%+4d,%+4d,%+4d}", Compass.m_min.x, Compass.m_min.y, Compass.m_min.z, Compass.m_max.x, Compass.m_max.y, Compass.m_max.z);
   Serial.println(report);
+}
+
+void ExecPowerOff() {
+  M5.Axp.PowerOff();
 }
 
 void SubMenu_Server() {
